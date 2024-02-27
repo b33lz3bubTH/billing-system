@@ -1,0 +1,43 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore built files
+dist/
+
+# Ignore environment variables file
+.env
+
+# Ignore any local TypeScript compiler artifacts
+*.tsbuildinfo
+
+# Ignore any local test logs
+*.test.log
+
+# Ignore any local development configuration files
+config/*.json
+
+# Ignore any local IDE/editor configuration files
+.vscode/
+.idea/
+*.code-workspace
+
+# Ignore any npm/yarn lock files
+package-lock.json
+yarn.lock
+
+# Ignore any development dependencies installed
+# Remove this if you want to include your development dependencies in your repository
+# Comment this line if you're using Yarn as your package manager
+# NPM
+npm-debug.log*
+.pnpm-debug.log*
+.npmrc
+# Yarn
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore macOS-specific files
+.DS_Store
+
+# Ignore Windows-specific files
+Thumbs.db

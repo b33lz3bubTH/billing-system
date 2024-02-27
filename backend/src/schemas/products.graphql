@@ -1,0 +1,46 @@
+type Products implements BaseFields {
+  id: ID!
+  createdAt: String!
+  updatedAt: String!
+  createdBy: String!
+  updatedBy: String!
+  deletedAt: String
+  deletedBy: String
+  name: String!
+  postDescription: String!
+  tags: [String!]!
+  sellingPrice: String!
+  mrp: String!
+  medias: [JSON!]
+  available: Boolean!
+  shopOwner: ID!
+}
+
+input ProductCreateInput {
+  name: String!
+  postDescription: String!
+  tags: [String!]!
+  sellingPrice: String!
+  mrp: String!
+  medias: [JSON!]
+  available: Boolean!
+  shopOwner: ID!
+}
+
+input ProductFilterInput {
+  name: String
+  postDescription: String
+  tags: [String!]
+  sellingPrice: String
+  mrp: String
+  available: Boolean
+  shopOwner: ID
+}
+
+extend type Query {
+  fetchProducts(filter: ProductFilterInput, take: Int!, skip: Int!): [Products]!
+}
+
+extend type Mutation {
+  createProducts(data: ProductCreateInput!): Products!
+}
