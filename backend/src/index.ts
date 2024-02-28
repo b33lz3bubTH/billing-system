@@ -5,7 +5,6 @@ import { resolvers } from "./resource/resolvers";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { MongoDataSource } from "./datasource/mongo.datasource";
-
 async function startServer() {
   try {
     // Connect to MongoDB

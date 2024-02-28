@@ -8,8 +8,10 @@ import { GqlPagination } from "../../common/types";
 import { ProductsService } from "./products.services";
 import { ModelRefs } from "../../models/models";
 import { isObjectIdOrHexString } from "mongoose";
+import { TransactionLogger, AppLogger } from "../../plugins/log/logger";
 
 const service = new ProductsService();
+const productLogger = new AppLogger(`Products`);
 
 const resolvers = {
   Query: {
@@ -17,10 +19,17 @@ const resolvers = {
       _: unknown,
       { filter, take, skip }: GqlPagination<ProductFilterInput>
     ): Promise<{ data: Products[]; count: number }> => {
+      const transactionLogger = new TransactionLogger();
+
+      transactionLogger.log(`Started, lifecycle`);
       const [data, count] = await Promise.all([
         service.paginate(take, skip, filter as ProductEntity),
         service.count(filter as ProductEntity),
       ]);
+      transactionLogger.log(`lifecycle data = ${data} - ${count}`);
+      transactionLogger.log(`Ended, lifecycle`);
+
+      transactionLogger.flush(productLogger);
       return {
         data: data as unknown as Products[],
         count,
@@ -31,7 +40,6 @@ const resolvers = {
       { _id }: { _id: string }
     ): Promise<Products | null> => {
       const data = await service.get(_id);
-      console.log(`data: `, data);
       return data as unknown as Products;
     },
   },
@@ -54,7 +62,6 @@ const resolvers = {
   },
   Products: {
     sellerId: (_: IProduct) => {
-      console.log(`_.sellerId?._id: `, _);
       if (isObjectIdOrHexString(_.sellerId)) {
         return { _solid_id: _.sellerId };
       }
