@@ -1,5 +1,5 @@
 const Models = {
   Products: "Products",
-  Shops: "Shops",
+  Sellers: "Sellers",
 };
 export { Models as ModelRefs };

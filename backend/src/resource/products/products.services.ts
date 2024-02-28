@@ -1,7 +1,7 @@
 import { Model } from "mongoose";
 import { ProductModel, IProduct, ProductEntity } from "../../models/products";
 
-export class ProductService {
+export class ProductsService {
   constructor(private model: Model<IProduct> = ProductModel) {}
 
   async create(data: ProductEntity): Promise<IProduct> {
@@ -9,7 +9,7 @@ export class ProductService {
   }
 
   async get(id: string): Promise<IProduct | null> {
-    return this.model.findById(id).populate("seller").exec();
+    return this.model.findById(id).populate(["sellerId"]).exec();
   }
 
   async update(

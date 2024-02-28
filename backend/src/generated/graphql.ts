@@ -16,6 +16,7 @@ export type Scalars = {
 };
 
 export type BaseFields = {
+  _id: Scalars['ID']['output'];
   createdAt: Scalars['String']['output'];
   createdBy: Scalars['String']['output'];
   deletedAt?: Maybe<Scalars['String']['output']>;
@@ -26,12 +27,35 @@ export type BaseFields = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createProducts: Products;
+  createProducts?: Maybe<Products>;
+  createSellers?: Maybe<Sellers>;
 };
 
 
 export type MutationCreateProductsArgs = {
   data: ProductCreateInput;
+};
+
+
+export type MutationCreateSellersArgs = {
+  data: SellerCreateInput;
+};
+
+export type Object_Id = {
+  __typename?: 'OBJECT_ID';
+  _solid_id?: Maybe<Scalars['String']['output']>;
+};
+
+export type PaginatedProducts = {
+  __typename?: 'PaginatedProducts';
+  count: Scalars['Int']['output'];
+  data?: Maybe<Array<Maybe<Products>>>;
+};
+
+export type PaginatedSellers = {
+  __typename?: 'PaginatedSellers';
+  count: Scalars['Int']['output'];
+  data?: Maybe<Array<Maybe<Sellers>>>;
 };
 
 export type ProductCreateInput = {
@@ -40,8 +64,8 @@ export type ProductCreateInput = {
   mrp: Scalars['String']['input'];
   name: Scalars['String']['input'];
   postDescription: Scalars['String']['input'];
+  sellerId: Scalars['ID']['input'];
   sellingPrice: Scalars['String']['input'];
-  shopOwner: Scalars['ID']['input'];
   tags: Array<Scalars['String']['input']>;
 };
 
@@ -50,25 +74,25 @@ export type ProductFilterInput = {
   mrp?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   postDescription?: InputMaybe<Scalars['String']['input']>;
+  sellerId?: InputMaybe<Scalars['ID']['input']>;
   sellingPrice?: InputMaybe<Scalars['String']['input']>;
-  shopOwner?: InputMaybe<Scalars['ID']['input']>;
   tags?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type Products = BaseFields & {
   __typename?: 'Products';
+  _id: Scalars['ID']['output'];
   available: Scalars['Boolean']['output'];
   createdAt: Scalars['String']['output'];
   createdBy: Scalars['String']['output'];
   deletedAt?: Maybe<Scalars['String']['output']>;
   deletedBy?: Maybe<Scalars['String']['output']>;
-  id: Scalars['ID']['output'];
   medias?: Maybe<Array<Scalars['JSON']['output']>>;
   mrp: Scalars['String']['output'];
   name: Scalars['String']['output'];
   postDescription: Scalars['String']['output'];
+  sellerId?: Maybe<SellerIdUnion>;
   sellingPrice: Scalars['String']['output'];
-  shopOwner: Scalars['ID']['output'];
   tags: Array<Scalars['String']['output']>;
   updatedAt: Scalars['String']['output'];
   updatedBy: Scalars['String']['output'];
@@ -76,7 +100,15 @@ export type Products = BaseFields & {
 
 export type Query = {
   __typename?: 'Query';
-  fetchProducts: Array<Maybe<Products>>;
+  fetchProduct?: Maybe<Products>;
+  fetchProducts?: Maybe<PaginatedProducts>;
+  fetchSeller?: Maybe<Sellers>;
+  fetchSellers?: Maybe<PaginatedSellers>;
+};
+
+
+export type QueryFetchProductArgs = {
+  _id: Scalars['ID']['input'];
 };
 
 
@@ -84,4 +116,49 @@ export type QueryFetchProductsArgs = {
   filter?: InputMaybe<ProductFilterInput>;
   skip: Scalars['Int']['input'];
   take: Scalars['Int']['input'];
+};
+
+
+export type QueryFetchSellerArgs = {
+  _id: Scalars['ID']['input'];
+};
+
+
+export type QueryFetchSellersArgs = {
+  filter?: InputMaybe<SellerFilterInput>;
+  skip: Scalars['Int']['input'];
+  take: Scalars['Int']['input'];
+};
+
+export type SellerCreateInput = {
+  active: Scalars['Boolean']['input'];
+  address: Scalars['String']['input'];
+  medias?: InputMaybe<Array<Scalars['JSON']['input']>>;
+  name: Scalars['String']['input'];
+  phone: Scalars['String']['input'];
+};
+
+export type SellerFilterInput = {
+  active?: InputMaybe<Scalars['Boolean']['input']>;
+  address?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SellerIdUnion = Object_Id | Sellers;
+
+export type Sellers = BaseFields & {
+  __typename?: 'Sellers';
+  _id: Scalars['ID']['output'];
+  active: Scalars['Boolean']['output'];
+  address: Scalars['String']['output'];
+  createdAt: Scalars['String']['output'];
+  createdBy: Scalars['String']['output'];
+  deletedAt?: Maybe<Scalars['String']['output']>;
+  deletedBy?: Maybe<Scalars['String']['output']>;
+  medias?: Maybe<Array<Scalars['JSON']['output']>>;
+  name: Scalars['String']['output'];
+  phone: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
+  updatedBy: Scalars['String']['output'];
 };

@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 import { IBaseDocument, baseSchemaFields } from "./base";
 import { SchemaFields } from "./type";
 import { ModelRefs } from "./models";
+import { ISeller } from "./sellers";
 
 interface ProductEntity {
   name: string;
@@ -11,7 +12,7 @@ interface ProductEntity {
   mrp: string;
   medias: any[];
   available: boolean;
-  shopOwner: Schema.Types.ObjectId;
+  sellerId: string | ISeller;
 }
 
 interface IProduct extends IBaseDocument, ProductEntity {}
@@ -19,7 +20,7 @@ interface IProduct extends IBaseDocument, ProductEntity {}
 const productSchemaFields: SchemaFields<ProductEntity> = {
   name: { type: String },
   postDescription: { type: String },
-  shopOwner: { type: Schema.Types.ObjectId, ref: ModelRefs.Shops },
+  sellerId: { type: Schema.Types.ObjectId, ref: ModelRefs.Sellers },
   sellingPrice: { type: String },
   mrp: { type: String },
   available: { type: Boolean },

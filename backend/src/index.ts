@@ -1,15 +1,15 @@
-import mongoose from "mongoose";
 import config from "./config";
 import { GQLTypesGen } from "./schemas/typedef-gen";
-import { resolvers } from "./resource/products/products.resolvers";
+import { resolvers } from "./resource/resolvers";
 
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import { MongoDataSource } from "./datasource/mongo.datasource";
 
 async function startServer() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(config.MONGO_URL, {});
+    await new MongoDataSource(config.MONGO_URL).init();
 
     // Create an instance of ApolloServer and pass typeDefs
     const server = new ApolloServer({

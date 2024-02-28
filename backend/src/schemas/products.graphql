@@ -1,5 +1,7 @@
+union SellerIDUnion = Sellers | OBJECT_ID
+
 type Products implements BaseFields {
-  id: ID!
+  _id: ID!
   createdAt: String!
   updatedAt: String!
   createdBy: String!
@@ -13,7 +15,7 @@ type Products implements BaseFields {
   mrp: String!
   medias: [JSON!]
   available: Boolean!
-  shopOwner: ID!
+  sellerId: SellerIDUnion
 }
 
 input ProductCreateInput {
@@ -24,7 +26,7 @@ input ProductCreateInput {
   mrp: String!
   medias: [JSON!]
   available: Boolean!
-  shopOwner: ID!
+  sellerId: ID!
 }
 
 input ProductFilterInput {
@@ -34,13 +36,23 @@ input ProductFilterInput {
   sellingPrice: String
   mrp: String
   available: Boolean
-  shopOwner: ID
+  sellerId: ID
+}
+
+type PaginatedProducts {
+  data: [Products]
+  count: Int!
 }
 
 extend type Query {
-  fetchProducts(filter: ProductFilterInput, take: Int!, skip: Int!): [Products]!
+  fetchProducts(
+    filter: ProductFilterInput
+    take: Int!
+    skip: Int!
+  ): PaginatedProducts
+  fetchProduct(_id: ID!): Products
 }
 
 extend type Mutation {
-  createProducts(data: ProductCreateInput!): Products!
+  createProducts(data: ProductCreateInput!): Products
 }

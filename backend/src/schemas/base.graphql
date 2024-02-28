@@ -1,6 +1,10 @@
 scalar JSON
+type OBJECT_ID {
+  _solid_id: String
+}
 
 interface BaseFields {
+  _id: ID!
   createdAt: String!
   updatedAt: String!
   createdBy: String!

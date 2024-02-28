@@ -1,0 +1,47 @@
+type Sellers implements BaseFields {
+  _id: ID!
+  createdAt: String!
+  updatedAt: String!
+  createdBy: String!
+  updatedBy: String!
+  deletedAt: String
+  deletedBy: String
+  name: String!
+  address: String!
+  phone: String!
+  medias: [JSON!]
+  active: Boolean!
+}
+
+input SellerCreateInput {
+  name: String!
+  address: String!
+  phone: String!
+  medias: [JSON!]
+  active: Boolean!
+}
+
+input SellerFilterInput {
+  name: String
+  address: String
+  phone: String
+  active: Boolean
+}
+
+type PaginatedSellers {
+  data: [Sellers]
+  count: Int!
+}
+
+extend type Query {
+  fetchSellers(
+    filter: SellerFilterInput
+    take: Int!
+    skip: Int!
+  ): PaginatedSellers
+  fetchSeller(_id: ID!): Sellers
+}
+
+extend type Mutation {
+  createSellers(data: SellerCreateInput!): Sellers
+}
