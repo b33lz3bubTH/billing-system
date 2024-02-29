@@ -33,7 +33,7 @@ export class GQLTypesGen {
       combinedSchema += `${schemaContent}\n`; // Add newline separator between schemas
     });
 
-    console.log(`combinedSchema: `, combinedSchema);
+    // console.log(`combinedSchema: `, combinedSchema);
 
     // Create type definitions using gql tag
     const typeDefs = gql`

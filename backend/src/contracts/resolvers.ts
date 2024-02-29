@@ -1,7 +1,4 @@
-// resolver.ts
-// import { ResolverFunction } from './types';
-
-// TODO: later
+// Define types
 export type ResolverFunction<T> = (
   parent: any,
   args: any,
@@ -9,54 +6,82 @@ export type ResolverFunction<T> = (
   info: any
 ) => T;
 
-// Decorator for registering resolver functions for queries
-export function QueryResolver(): MethodDecorator {
-  return function (
-    target: any,
-    propertyKey: string | symbol,
-    descriptor: PropertyDescriptor
-  ) {
-    if (!target.queries) {
-      target.queries = [];
-    }
-    target.queries.push(String(propertyKey));
-    return descriptor;
-  };
-}
+// Base class for resolvers
+export class BaseResolver {
+  static queries: Record<string, ResolverFunction<any>> = {};
+  static mutations: Record<string, ResolverFunction<any>> = {};
+  static fieldResolvers: Record<string, Record<string, ResolverFunction<any>>> =
+    {};
 
-// Decorator for registering resolver functions for mutations
-export function MutationResolver(): MethodDecorator {
-  return function (
-    target: any,
-    propertyKey: string | symbol,
-    descriptor: PropertyDescriptor
-  ) {
-    if (!target.mutations) {
-      target.mutations = [];
-    }
-    target.mutations.push(String(propertyKey));
-    return descriptor;
-  };
-}
+  // Decorator for registering resolver functions for queries
+  static QueryResolver(): MethodDecorator {
+    return function (
+      target: any,
+      propertyKey: string | symbol,
+      descriptor: PropertyDescriptor
+    ): void {
+      if (!target.constructor.queries) {
+        target.constructor.queries = {};
+      }
+      target.constructor.queries[propertyKey.toString()] = descriptor.value;
+    };
+  }
 
-// Function to automatically register resolver functions for queries and mutations
-export function registerResolvers<T extends { prototype: any }>(
-  target: new (...args: any[]) => T
-): Record<string, ResolverFunction<any>> {
-  const queries: string[] = target.prototype.queries || [];
-  const mutations: string[] = target.prototype.mutations || [];
+  // Decorator for registering resolver functions for mutations
+  static MutationResolver(): MethodDecorator {
+    return function (
+      target: any,
+      propertyKey: string | symbol,
+      descriptor: PropertyDescriptor
+    ): void {
+      if (!target.constructor.mutations) {
+        target.constructor.mutations = {};
+      }
+      target.constructor.mutations[propertyKey.toString()] = descriptor.value;
+    };
+  }
 
-  const resolvers: Record<string, ResolverFunction<any>> = {};
+  // Decorator for registering field resolver functions
+  static FieldResolver(type: string, field: string): MethodDecorator {
+    return function (
+      target: any,
+      propertyKey: string | symbol,
+      descriptor: PropertyDescriptor
+    ): void {
+      if (!target.constructor.fieldResolvers) {
+        target.constructor.fieldResolvers = {};
+      }
+      if (!target.constructor.fieldResolvers[type]) {
+        target.constructor.fieldResolvers[type] = {};
+      }
+      target.constructor.fieldResolvers[type][field] = descriptor.value;
+    };
+  }
 
-  // Register resolver functions for queries
-  queries.forEach((methodName: string) => {
-    resolvers[methodName] = target.prototype[methodName].bind(target.prototype);
-  });
+  // Method to render resolvers
+  static render(): Record<string, Record<string, ResolverFunction<any>>> {
+    const resolvers = {
+      Query: {} as Record<string, ResolverFunction<any>>,
+      Mutation: {} as Record<string, ResolverFunction<any>>,
+    };
 
-  // Register resolver functions for mutations
-  mutations.forEach((methodName: string) => {
-    resolvers[methodName] = target.prototype[methodName].bind(target.prototype);
-  });
+    Object.entries(this.queries).forEach(([methodName, resolver]) => {
+      resolvers.Query[methodName] = resolver.bind(this);
+    });
 
-  return resolvers;
+    Object.entries(this.mutations).forEach(([methodName, resolver]) => {
+      resolvers.Mutation[methodName] = resolver.bind(this);
+    });
+
+    // Object.entries(this.fieldResolvers).forEach(([type, fieldResolverMap]) => {
+    //   if (!resolvers[type]) {
+    //     resolvers[type] = {} as Record<string, ResolverFunction<any>>;
+    //   }
+    //   Object.entries(fieldResolverMap).forEach(([field, resolver]) => {
+    //     resolvers[type as keyof typeof resolvers][field] = resolver.bind(this);
+    //   });
+    // });
+
+    return resolvers;
+  }
 }
