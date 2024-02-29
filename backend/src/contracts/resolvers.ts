@@ -60,7 +60,7 @@ export class BaseResolver {
 
   // Method to render resolvers
   static render(): Record<string, Record<string, ResolverFunction<any>>> {
-    const resolvers = {
+    const resolvers: { [key: string]: any } = {
       Query: {} as Record<string, ResolverFunction<any>>,
       Mutation: {} as Record<string, ResolverFunction<any>>,
     };
@@ -73,14 +73,10 @@ export class BaseResolver {
       resolvers.Mutation[methodName] = resolver.bind(this);
     });
 
-    // Object.entries(this.fieldResolvers).forEach(([type, fieldResolverMap]) => {
-    //   if (!resolvers[type]) {
-    //     resolvers[type] = {} as Record<string, ResolverFunction<any>>;
-    //   }
-    //   Object.entries(fieldResolverMap).forEach(([field, resolver]) => {
-    //     resolvers[type as keyof typeof resolvers][field] = resolver.bind(this);
-    //   });
-    // });
+    // Copy field resolvers from the class to the resolvers object
+    Object.keys(this.fieldResolvers).forEach((type) => {
+      resolvers[type] = { ...this.fieldResolvers[type] };
+    });
 
     return resolvers;
   }

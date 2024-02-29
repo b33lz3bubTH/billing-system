@@ -9,12 +9,23 @@ interface ILogger {
 }
 
 export class TransactionLogger {
-  constructor(private logCollector: string[] = []) {}
+  public loggerName: string;
+  constructor(
+    loggerName: string = "Default",
+    private logCollector: string[] = []
+  ) {
+    this.loggerName = loggerName;
+  }
   log(message: string) {
     this.logCollector.push(message);
   }
   flush(logger: AppLogger) {
-    logger.info(`[LifeTimeLogger]: ${JSON.stringify(this.logCollector)}`);
+    if (this.logCollector.length)
+      logger.info(
+        `[LifeCycle of ${this.loggerName}]: ${JSON.stringify(
+          this.logCollector
+        )}`
+      );
   }
 }
 
