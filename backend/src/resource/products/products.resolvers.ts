@@ -11,8 +11,8 @@ import { isObjectIdOrHexString } from "mongoose";
 import { AppLogger, TransactionLogger } from "../../plugins/log/logger";
 import { BaseResolver } from "../../contracts/resolvers";
 
-const service = new ProductsService();
 const productLogger = new AppLogger(`Products`);
+const service: ProductsService = new ProductsService();
 
 class ProductResolver extends BaseResolver {
   @BaseResolver.QueryResolver()
@@ -37,8 +37,6 @@ class ProductResolver extends BaseResolver {
     _: unknown,
     { _id }: { _id: string }
   ): Promise<Products | null> {
-    console.log(`called: resolver`);
-
     const data = await service.get(_id);
     return data as unknown as Products;
   }
@@ -70,5 +68,6 @@ class ProductResolver extends BaseResolver {
 }
 
 const resolversNew = ProductResolver.render();
+console.log(`resolversNew: `, resolversNew);
 
 export { resolversNew as resolvers };
